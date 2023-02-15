@@ -20,7 +20,7 @@ class MovieSerializer(serializers.Serializer):
         return instance
 
     def validate(self, data):
-        if data['title'] == data['description']:
+        if data['name'] == data['description']:
             raise serializers.ValidationError("Title and Description should be different!")
         return data
     
