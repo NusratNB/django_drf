@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from ..models import WatchList
-from .serializers import WatchListerializer
+from .serializers import WatchListSerializer
 from rest_framework import status
 
 
@@ -10,11 +10,11 @@ class WatchListAV(APIView):
 
     def get(self, reqeust):
         WatchList = WatchList.objects.all()
-        serializer = WatchListerializer(WatchList, many=True)
+        serializer = WatchListSerializer(WatchList, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = WatchListerializer(data=request.data)
+        serializer = WatchListSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -22,7 +22,7 @@ class WatchListAV(APIView):
             return Response(serializer.errors)
 
 
-class MovieDetailAV(APIView):
+class WatchListDetailAV(APIView):
 
     def get(self, request, pk):
         try:
@@ -30,12 +30,12 @@ class MovieDetailAV(APIView):
         except WatchList.DoesNotExist:
             return Response({'Error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = WatchListerializer(movie)
+        serializer = WatchListSerializer(movie)
         return Response(serializer.data)
 
     def put(self, request, pk):
         movie = WatchList.objects.get(pk=pk)
-        serializer = WatchListerializer(movie, data=request.data)
+        serializer = WatchListSerializer(movie, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
