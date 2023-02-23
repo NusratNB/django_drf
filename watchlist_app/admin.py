@@ -3,4 +3,5 @@ from .models import *
 
 
 # Register your models here.
-admin.site.register(Movies)
+admin.site.register(WatchList)
+admin.site.register(StreamPlatform)
