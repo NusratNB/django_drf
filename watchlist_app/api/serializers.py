@@ -4,7 +4,6 @@ from ..models import WatchList, StreamPlatform
 
 class WatchListSerializer(serializers.ModelSerializer):
 
-    len_name = serializers.SerializerMethodField()
 
     class Meta:
         model = WatchList
