@@ -6,6 +6,14 @@ from ..models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 
 
+class ReviewDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
+
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get(self, request,  *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
 
 
 class ReviewList(mixins.ListModelMixin,
