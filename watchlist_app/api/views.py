@@ -74,7 +74,7 @@ class StreamPlatformDetailAV(APIView):
             return Response({'Error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = StreamPlatformSerializer(
-            stream, context={'request': request})
+            stream)
         return Response(serializer.data)
 
     def put(self, request, pk):
