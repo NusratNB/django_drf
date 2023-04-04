@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, generics, viewsets
+from rest_framework.exceptions import ValidationError
 
 from ..models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
@@ -10,10 +11,20 @@ from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSe
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
 
+    def get_queryset(self):
+        return Review.objects.all()
+
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
         watchlist = WatchList.objects.get(pk=pk)
-        serializer.save(watchlist=watchlist)
+
+        user = self.request.user
+        review_queryset = Review.objects.filter(
+            watchlist=watchlist, review_user=user)
+        if review_queryset.exists:
+            raise ValidationError("You have already reviewed this movie")
+
+        serializer.save(watchlist=watchlist, review_user=user)
 
 
 class ReviewList(generics.ListCreateAPIView):
@@ -68,6 +79,7 @@ class WatchListAV(APIView):
         else:
             return Response(serializer.errors)
 
+
 class StreamPlatformVS(viewsets.ModelViewSet):
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
@@ -84,7 +96,7 @@ class StreamPlatformVS(viewsets.ModelViewSet):
 #         watchlist = get_object_or_404(queryset, pk=pk)
 #         serializer = StreamPlatformSerializer(watchlist, context={'request': request})
 #         return Response(serializer.data)
-    
+
 #     def create(self, request):
 #         serializer = StreamPlatformSerializer(data=request.data)
 #         if serializer.is_valid():
