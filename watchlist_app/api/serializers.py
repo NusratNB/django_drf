@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from ..models import WatchList, StreamPlatform, Review
 
+
 class ReviewSerializer(serializers.ModelSerializer):
+    review_user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Review
@@ -9,12 +11,14 @@ class ReviewSerializer(serializers.ModelSerializer):
         # fields = exclude
         # fields = "__all__"
 
+
 class WatchListSerializer(serializers.ModelSerializer):
-    reviews = ReviewSerializer(many = True, read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = WatchList
         fields = "__all__"
+
 
 class StreamPlatformSerializer(serializers.HyperlinkedModelSerializer):
 
